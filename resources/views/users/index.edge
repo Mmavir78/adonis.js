@@ -1,0 +1,80 @@
+@layout('master')
+
+@section('content')
+
+@if(old('notification'))
+    <div class="notification is-success">
+        {{ old('notification') }}
+    </div>
+@endif
+
+<div class="box">
+  <h2 class="title">New User</h2>
+
+  <form action="/users" method="POST">
+    {{ csrfField() }}
+    <div class="field has-addons">
+      <div class="control is-expanded">
+        <input class="input" type="text" name="username" value="{{ old('username', '') }}" placeholder="Username">
+        {{ elIf('<span>$self</span>', getErrorFor('username'), hasErrorFor('username')) }}
+      </div>
+      <div class="field has-addons">
+        <input class="input" type="text" name="email" value="{{ old('email', '') }}" placeholder="email">
+        {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('email'), hasErrorFor('email')) }}
+      </div>
+      <div class="field has-addons">
+        <input class="input" type="password" name="password" value="{{ old('password', '') }}" placeholder="password">
+        {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('password'), hasErrorFor('password')) }}
+      </div>
+      <div class="control">
+        <button type="submit" class="button is-primary">
+          Add User
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+  <div class="box">
+    <h1 class="title">User List</h1>
+      <table class="table is-bordered is-striped is-narrow is-fullwidth">
+        <thead>
+          <tr>
+            <th>SN</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Action</th> 
+          </tr>
+        </thead>
+        <tbody>
+          @each(user in users)
+            <tr>
+              <td>
+                {{ ($loop.index + 1) }}
+              </td>
+              <td>
+                {{ user.username }}
+              </td>
+              <td>
+                {{ user.email }}
+              </td>
+              <td>
+                <form action="{{ 'users/' + task.id + '?_method=DELETE' }}" method="POST">
+                    {{ csrfField() }}
+                    <button type="submit" class="button is-danger is-outlined">
+                        <span>DELETE</span>
+                        <span class="icon is-small">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </form>
+              </td>
+            </tr>
+          @else
+            <tr>
+              <td colspan="4" class="has-text-centered">No task created yet!</td>
+            </tr>
+          @endeach
+        </tbody>
+      </table>
+  </div>
+@endsection
